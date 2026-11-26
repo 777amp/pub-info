@@ -13,6 +13,11 @@ Models in `allowed_models.json` are starred and always remain visible.
 ### OpenRouter
 
 <!-- OPENROUTER:START -->
+| Listed | 🕒 Pending review | Hidden |
+| :-: | :-: | :-: |
+| [**46**](openrouter/model-updates/MODELS.md) | **27** | **428** |
+
+Last sync 2026-11-26 UTC · [Browse all models on OpenRouter](https://openrouter.ai/models)
 <!-- OPENROUTER:END -->
 
 ### Vercel AI Gateway
