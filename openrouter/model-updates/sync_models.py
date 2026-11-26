@@ -17,6 +17,14 @@ MODELS_MD_LINK = "openrouter/model-updates/MODELS.md"
 README_START = "<!-- MODELS:START -->"
 README_END = "<!-- MODELS:END -->"
 
+MODALITY_ICONS = {
+    "text": "💬",
+    "image": "🖼️",
+    "file": "📄",
+    "audio": "🎧",
+    "video": "🎬",
+}
+
 
 def load_json_list(path: Path) -> list[str]:
     if not path.exists():
@@ -41,15 +49,64 @@ def model_key(m: dict) -> str:
     return m.get("id") or m.get("canonical_slug") or ""
 
 
-def format_price_per_million(raw_price: str | None) -> str:
-    if not raw_price:
-        return "N/A"
-    try:
-        val = float(raw_price) * 1_000_000
-        return "Free" if val == 0 else f"${val:,.2f}"
-    except ValueError:
-        return "N/A"
+# ---------- formatting helpers ----------
 
+def fmt_price(raw: str | None) -> str | None:
+    """Per-token price string -> '$0.15' per 1M tokens, 'Free', or 'varies'."""
+    if raw is None or raw == "":
+        return None
+    try:
+        val = float(raw) * 1_000_000
+    except ValueError:
+        return None
+    if val < 0:
+        return "varies"  # router models report negative placeholder prices
+    if val == 0:
+        return "Free"
+    s = f"{val:.4f}".rstrip("0")
+    whole, _, frac = s.partition(".")
+    return f"${whole}.{frac.ljust(2, '0')}"
+
+
+def fmt_price_pair(pricing: dict) -> str:
+    p_in = fmt_price(pricing.get("prompt"))
+    p_out = fmt_price(pricing.get("completion"))
+    if p_in is None and p_out is None:
+        return "-"
+    if p_in == p_out == "Free":
+        return "Free"
+    return f"{p_in or '-'} → {p_out or '-'}"
+
+
+def fmt_context(n: int | None) -> str:
+    if not n:
+        return "-"
+    if n >= 1_000_000:
+        return f"{n / 1_000_000:.3g}M"
+    if n >= 1_000:
+        return f"{n / 1_000:.3g}K"
+    return str(n)
+
+
+def icons(mods: list[str]) -> str:
+    return "".join(MODALITY_ICONS.get(x, "❔") for x in mods) or "❔"
+
+
+def fmt_modalities(arch: dict) -> str:
+    ins = arch.get("input_modalities")
+    outs = arch.get("output_modalities")
+    if not ins or not outs:
+        # Fallback: parse strings like "text+image->text"
+        raw = arch.get("modality") or ""
+        left, _, right = raw.partition("->")
+        ins = [x for x in left.split("+") if x]
+        outs = [x for x in right.split("+") if x]
+    if not ins and not outs:
+        return "-"
+    return f"{icons(ins)} → {icons(outs)}"
+
+
+# ---------- README ----------
 
 def update_readme(visible: int, new: int, hidden: int) -> None:
     block = (
@@ -71,6 +128,8 @@ def update_readme(visible: int, new: int, hidden: int) -> None:
         text = text.rstrip() + "\n\n" + block + "\n"
     README.write_text(text, encoding="utf-8")
 
+
+# ---------- main ----------
 
 def main() -> None:
     now = int(time.time())
@@ -123,7 +182,7 @@ def main() -> None:
 
     visible.sort(key=lambda m: (
         0 if is_allowed(m) else 1 if model_key(m) in new_keys else 2,
-        m.get("name", "").lower(),
+        model_key(m).lower(),
     ))
     hidden_count = len(models) - len(visible)
 
@@ -137,30 +196,29 @@ def main() -> None:
     lines = [
         "# OpenRouter Models",
         "",
-        f"Listed: **{len(visible)}** | 🆕 Unseen: **{len(new_keys)}** | Hidden: **{hidden_count}**",
+        f"**{len(visible)}** listed · 🆕 **{len(new_keys)}** unseen · **{hidden_count}** hidden · "
+        f"[browse all on OpenRouter]({OPENROUTER_URL})",
         "",
-        f"Browse everything on [OpenRouter]({OPENROUTER_URL}).",
+        "⭐ allowlisted · 🆕 unseen · "
+        "💬 text · 🖼️ image · 📄 file · 🎧 audio · 🎬 video · "
+        "prices are $ per 1M tokens (input → output)",
         "",
-        "| Status | Model | ID | Context | Input / 1M | Output / 1M | Modalities |",
-        "| :--- | :--- | :--- | ---: | ---: | ---: | :--- |",
+        "| | Model | Price (in → out) | Modalities | Ctx |",
+        "| :-: | :--- | :--- | :-: | ---: |",
     ]
 
     for m in visible:
-        model_id = m.get("id", "")
         if is_allowed(m):
-            status = "⭐ Allowlisted"
+            status = "⭐"
         elif model_key(m) in new_keys:
-            status = "🆕 New"
+            status = "🆕"
         else:
-            status = "Seen"
-        name = m.get("name", "Unknown").replace("|", "\\|")
-        ctx = f"{m.get('context_length', 0):,}"
+            status = ""
         pricing = m.get("pricing") or {}
-        prompt_price = format_price_per_million(pricing.get("prompt"))
-        completion_price = format_price_per_million(pricing.get("completion"))
-        modality = (m.get("architecture") or {}).get("modality", "N/A")
+        arch = m.get("architecture") or {}
         lines.append(
-            f"| {status} | {name} | `{model_id}` | {ctx} | {prompt_price} | {completion_price} | {modality} |"
+            f"| {status} | `{m.get('id', '')}` | {fmt_price_pair(pricing)} "
+            f"| {fmt_modalities(arch)} | {fmt_context(m.get('context_length'))} |"
         )
 
     OUTPUT_MD.write_text("\n".join(lines) + "\n", encoding="utf-8")
