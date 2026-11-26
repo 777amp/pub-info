@@ -10,6 +10,11 @@ Anything new shows up as 🆕 until you mark it seen.
 ### OpenRouter
 
 <!-- OPENROUTER:START -->
+| Listed | 🕒 Pending review | Hidden |
+| :-: | :-: | :-: |
+| [**46**](openrouter/model-updates/MODELS.md) | **28** | **428** |
+
+Last sync 2026-11-26 UTC · [Browse all models on OpenRouter](https://openrouter.ai/models)
 <!-- OPENROUTER:END -->
 
 ### Vercel AI Gateway
