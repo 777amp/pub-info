@@ -18,5 +18,10 @@
   "inference-net/schematron-v2-turbo",
   "inference-net/schematron-v2-small",
   "meta/muse-spark-1.3-contributor",
-  "google/gemini-4-neon"
+  "google/gemini-4-neon",
+  "inclusionai/ling-3.2-flash:free",
+  "openai/gpt-6.2-sol",
+  "qwen/qwen4-max",
+  "upstage/solar-mini-4-5",
+  "xiaomi/mimo-v2.6-flash-mopd"
 ]
