@@ -4,23 +4,21 @@ Public notes, trackers, and small automations.
 
 ## 📡 Model trackers
 
-Each tracker pulls its catalog daily with a GitHub Action and rebuilds a `MODELS.md`.
-Anything new shows up as 🆕 until you mark it seen.
+Each tracker pulls its catalog daily with a GitHub Action and rebuilds its
+`MODELS.md`.
+
+Automatic syncs display newly discovered models with a pending-review icon.
+Models in `allowed_models.json` are starred and always remain visible.
 
 ### OpenRouter
 
 <!-- OPENROUTER:START -->
-| Listed | 🕒 Pending review | Hidden |
-| :-: | :-: | :-: |
-| [**46**](openrouter/model-updates/MODELS.md) | **28** | **428** |
-
-Last sync 2026-11-26 UTC · [Browse all models on OpenRouter](https://openrouter.ai/models)
 <!-- OPENROUTER:END -->
 
 ### Vercel AI Gateway
 
 <!-- VERCEL:START -->
-| Listed | 🆕 Unseen | Hidden |
+| Listed | 🕒 Pending review | Hidden |
 | :-: | :-: | :-: |
 | [**518**](vercel/model-updates/MODELS.md) | **0** | **0** |
 
@@ -33,10 +31,19 @@ Run these from **Actions → (workflow) → Run workflow**:
 
 | I want to… | Do this |
 | :--- | :--- |
-| Mark everything as seen | `check-openrouter` or `check-vercel` → tick `mark_seen` |
-| Hide models | Same workflows, IDs in `hide`, or add them to that tracker's `hidden_models.json` |
-| Always show a model | Add its ID to that tracker's `allowed_models.json` |
+| Review the catalog | Manually run the relevant workflow |
+| Approve models | Add their IDs to that tracker's `allowed_models.json` |
+| Hide everything not approved | Manually run the workflow after updating the allow-list |
+| Hide specific models manually | Supply their IDs in the workflow's `hide` input |
 | Switch icons between SVG and emoji | `set-icon-mode` → pick `svg` or `emoji` |
+
+### How model review works
+
+- ⭐ **Allowlisted:** always visible and starred.
+- 🕒 **Pending review:** visible during automatic syncs, but not yet allowlisted.
+- **Hidden:** models not allowlisted after a manual workflow run.
+- Adding a hidden model to the allow-list makes it visible again.
+- Automatic syncs never hide newly discovered models.
 
 ### Layout
 
@@ -44,21 +51,13 @@ Run these from **Actions → (workflow) → Run workflow**:
 | :--- | :--- |
 | `openrouter/model-updates/` | OpenRouter tracker |
 | `vercel/model-updates/` | Vercel AI Gateway tracker |
-| `shared/modelmd.py` | Table, icon, and README generation shared by both |
+| `shared/modelmd.py` | Shared table, icon, and README generation |
 | `shared/settings.json` | Current icon style |
-| `shared/icons/` | The modality SVGs, editable |
+| `shared/icons/` | Shared SVG icons |
 
-Inside each tracker folder: `MODELS.md` (generated), `allowed_models.json` (⭐ always shown),
-`hidden_models.json`, `seen_models.json`, `models.json` (raw catalog), and `sync_models.py`.
+Inside each tracker folder: `MODELS.md`, `allowed_models.json`,
+`hidden_models.json`, `seen_models.json`, `models.json`, and `sync_models.py`.
 
 ## 📁 Other folders
 
 - [`antigravity/`](antigravity) — notes and files for Antigravity
-
-<!-- MODELS:START -->
-| Listed | 🆕 Unseen | Hidden |
-| :-: | :-: | :-: |
-| [**38**](openrouter/model-updates/MODELS.md) | **0** | **436** |
-
-Last sync 2026-11-26 UTC · [Browse all models on OpenRouter](https://openrouter.ai/models)
-<!-- MODELS:END -->
