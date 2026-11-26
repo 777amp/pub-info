@@ -1,3 +1,5 @@
+name: check-openrouter
+
 on:
   schedule:
     - cron: '0 0 * * *'
@@ -16,12 +18,20 @@ on:
       - 'openrouter/model-updates/allowed_models.json'
       - 'openrouter/model-updates/hidden_models.json'
       - 'openrouter/model-updates/sync_models.py'
+      - 'shared/modelmd.py'
+
+concurrency:
+  group: model-trackers
+  cancel-in-progress: false
 
 jobs:
   sync-models:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    defaults:
+      run:
+        shell: bash
 
     steps:
       - name: Checkout repository
@@ -37,23 +47,18 @@ jobs:
           MARK_SEEN: ${{ inputs.mark_seen }}
           HIDE: ${{ inputs.hide }}
         run: |
-          curl -sS https://openrouter.ai/api/v1/models |
-            jq '.' > openrouter/model-updates/models.json
+          curl -fsS https://openrouter.ai/api/v1/models | jq '.' > /tmp/models.json
+          mv /tmp/models.json openrouter/model-updates/models.json
           python3 openrouter/model-updates/sync_models.py
 
       - name: Commit and push changes
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add README.md \
-                  openrouter/model-updates/models.json \
-                  openrouter/model-updates/hidden_models.json \
-                  openrouter/model-updates/seen_models.json \
-                  openrouter/model-updates/MODELS.md \
-                  openrouter/model-updates/allowed_models.json
+          git add README.md shared openrouter/model-updates
 
           if ! git diff --staged --quiet; then
-            git commit -m "chore: sync OpenRouter models, README, and markdown"
+            git commit -m "chore: sync OpenRouter models"
             git push
           else
             echo "No changes detected."
