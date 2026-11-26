@@ -17,5 +17,6 @@
   "openai/gpt-6.1-sol",
   "inference-net/schematron-v2-turbo",
   "inference-net/schematron-v2-small",
-  "meta/muse-spark-1.3-contributor"
+  "meta/muse-spark-1.3-contributor",
+  "google/gemini-4-neon"
 ]
