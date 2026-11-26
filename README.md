@@ -1,6 +1,12 @@
 # My Info
 
+Public notes, trackers, and small automations.
+
 ## Model trackers
 
-- [OpenRouter](openrouter/model-updates/MODELS.md) — dynamic listed / pending / hidden counts
-- [Vercel AI Gateway](vercel/model-updates/MODELS.md) — dynamic listed / pending / hidden counts
+- [OpenRouter models](openrouter/model-updates/MODELS.md)
+- [Vercel AI Gateway models](vercel/model-updates/MODELS.md)
+
+## 📁 Other folders
+
+- [`antigravity/`](antigravity) — notes and files for Antigravity
