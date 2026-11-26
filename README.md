@@ -15,6 +15,11 @@ Anything new shows up as 🆕 until you mark it seen.
 ### Vercel AI Gateway
 
 <!-- VERCEL:START -->
+| Listed | 🆕 Unseen | Hidden |
+| :-: | :-: | :-: |
+| [**518**](vercel/model-updates/MODELS.md) | **0** | **0** |
+
+Last sync 2026-11-26 UTC · [Browse all models on Vercel AI Gateway](https://vercel.com/ai-gateway/models)
 <!-- VERCEL:END -->
 
 ### Managing the lists
