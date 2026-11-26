@@ -1,16 +1,11 @@
-name: Sync OpenRouter Models
-
 on:
   schedule:
     - cron: '0 0 * * *'
   workflow_dispatch:
   push:
     paths:
-      - 'OpenRouter/allowed_models.json'
-      - 'OpenRouter/hidden_models.json'
-
-permissions:
-  contents: write
+      - 'openrouter/model-updates/allowed_models.json'
+      - 'openrouter/model-updates/hidden_models.json'
 
 jobs:
   sync-models:
@@ -27,15 +22,19 @@ jobs:
 
       - name: Fetch catalog and sync hidden/markdown files
         run: |
-          mkdir -p OpenRouter
-          curl -sS https://openrouter.ai/api/v1/models | jq '.' > OpenRouter/models.json
-          python3 OpenRouter/sync_models.py
+          curl -sS https://openrouter.ai/api/v1/models |
+            jq '.' > openrouter/model-updates/models.json
+          python3 openrouter/model-updates/sync_models.py
 
       - name: Commit and push changes
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add OpenRouter/models.json OpenRouter/hidden_models.json OpenRouter/seen_models.json OpenRouter/MODELS.md
+          git add openrouter/model-updates/models.json \
+                  openrouter/model-updates/hidden_models.json \
+                  openrouter/model-updates/seen_models.json \
+                  openrouter/model-updates/MODELS.md \
+                  openrouter/model-updates/allowed_models.json
 
           if ! git diff --staged --quiet; then
             git commit -m "chore: sync OpenRouter models, hidden list, and markdown"
