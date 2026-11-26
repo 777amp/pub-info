@@ -2,7 +2,7 @@ import json
 import time
 from pathlib import Path
 
-BASE_DIR = Path("OpenRouter")
+BASE_DIR = Path("openrouter/model-updates")
 MODELS_FILE = BASE_DIR / "models.json"
 ALLOWED_FILE = BASE_DIR / "allowed_models.json"
 HIDDEN_FILE = BASE_DIR / "hidden_models.json"
