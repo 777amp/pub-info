@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-BASE_DIR = Path("OpenRouter")
+BASE_DIR = Path("openrouter/model-updates")
 MODELS_FILE = BASE_DIR / "models.json"
 HIDDEN_FILE = BASE_DIR / "hidden_models.json"
 OUTPUT_MD = BASE_DIR / "MODELS.md"
