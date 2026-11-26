@@ -3,16 +3,14 @@ name: check-openrouter
 on:
   schedule:
     - cron: '0 0 * * *'
+
   workflow_dispatch:
     inputs:
-      mark_seen:
-        description: Mark all currently listed models as seen
-        type: boolean
-        default: false
       hide:
-        description: Comma-separated model IDs to hide
+        description: Comma-separated model IDs to hide manually
         type: string
         default: ''
+
   push:
     paths:
       - 'openrouter/model-updates/allowed_models.json'
@@ -44,7 +42,7 @@ jobs:
 
       - name: Fetch catalog and sync files
         env:
-          MARK_SEEN: ${{ inputs.mark_seen }}
+          REVIEW_ALLOWLIST: ${{ github.event_name == 'workflow_dispatch' }}
           HIDE: ${{ inputs.hide }}
         run: |
           curl -fsS https://openrouter.ai/api/v1/models | jq '.' > /tmp/models.json
