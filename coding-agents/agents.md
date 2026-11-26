@@ -134,3 +134,65 @@ Coding agent from Nous Research that runs on whichever model you point it at —
 - Top-ups $10–$200 via Stripe. Hermes Cloud (hosted always-on agent, cron 24/7) included with paid plans, billed daily from credits in arrears.
 
 Sources: https://github.com/NousResearch/hermes-agent, https://hermes-agent.nousresearch.com/docs/integrations/providers, https://portal.nousresearch.com/manage-subscription, https://playnhost.com/knowledgebase/hermes-agent-hosting/how-much-memory-does-hermes-agent-need/, https://heyhermes.app/guides/hermes-agent-hardware-requirements
+
+## Pi (Earendil)
+
+Terminal coding agent with a tiny core — four built-in tools (`read`, `write`, `edit`, `bash`) and a system prompt under 1,000 tokens; everything else is opt-in via extensions. Now Earendil Inc. (was badlogic/pi-mono); npm `@earendil-works/pi-coding-agent` v1.6.1 (old `@mariozechner` scope is deprecated). Repo: earendil-works/pi — 123,994 stars / 16,026 forks (Nov 2026), MIT.
+
+### What makes it stand out
+
+- Minimal core by design: four built-in tools only; sub-agents, plan mode and permission prompts deliberately not built in — add them via extensions.
+- Mid-session model switching: `/model` (fuzzy search) or Ctrl+L; Ctrl+P cycles favorite models.
+- Native MCP since 1.0, plus Codemode: a QuickJS sandbox where the model writes short JavaScript to call, filter and parallelize MCP tools without dumping schemas into context.
+- Pi Durable (experimental): checkpoints every turn, tool call and compaction to SQLite, JSONL or Cloudflare Durable Objects — crash-safe, always-on background agents.
+- No permission prompts: runs with your account's permissions and never asks before a tool call — sandbox it yourself (Docker, Gondolin micro-VM extension, OpenShell sandbox).
+
+### Size (RAM / disk)
+
+| | |
+|---|---|
+| npm package unpacked (v1.6.1) | ~23.8 MiB, 1,330 files |
+| Full installed footprint | Unverified (deps include pi-ai, pi-mcp, pi-tui, pi-codemode, pi-agent-core, photon-node) |
+| RAM (measured) | ~144 MB per active session; ~76 MB extra per added session; 833 MB for 10 sessions |
+| Runtime | TypeScript on Node.js; requires Node >= 22.19.0 |
+
+### Apps (GUI)
+
+- Pi itself is terminal-only. Third-party GUIs: Pi GPUI (Rust native, ~16 MB download, ~75 MB idle measured); Electron clients (190–430 MB idle measured).
+
+### CLI (`pi`)
+
+- Install: official installer (`curl -fsSL https://pi.dev/install.sh | sh`, pins deps, updates via `pi update`), npm, Nix, Windows PowerShell.
+- Four ways to run: interactive fullscreen TUI, print/JSON mode for scripts, RPC over stdin/stdout, TypeScript SDK.
+
+### Extensions / plugins
+
+- Extensions are TypeScript modules running in-process: tools, commands, shortcuts, event handlers, UI, RAG, memory, sub-agent spawning, permission gates, MCP, custom editors.
+- Install: `pi install npm:<package>` (or from git); `pi list`, `pi update`. Extensions, skills, prompt templates and themes bundle into shareable Pi packages via npm or git.
+- Skills: Agent Skills spec (`SKILL.md`), lazy-loaded only when needed.
+- MCP: built in since 1.0 — `pi mcp add <name> --url …`, config in `~/.pi/agent/mcp.json`.
+- Ecosystem: ~5,700 packages at pi.dev/packages. Notable: `safe-git`, `pi-cost-dashboard`, `pi-notify`, `checkpoint`, `wj-pi-subagents`, `pi-web-search-lite`, `@bachi/pi-coder`.
+- pi.dev's own warning: packages can execute code and influence agent behavior — review the source before installing third-party packages.
+
+### Providers and models
+
+- 15+ built-in providers, hundreds of models (tool-capable models only; catalog refreshes from pi.dev at runtime).
+- Subscriptions via `/login`: Claude Pro/Max, ChatGPT Plus/Pro (Codex), GitHub Copilot, Google Gemini CLI, Google Antigravity (free with a Google account). Docs no longer publish the full list — confirm in the CLI.
+- API keys: Anthropic, OpenAI, Azure, Gemini, Vertex, Bedrock, Mistral, Groq, Cerebras, xAI, OpenRouter, Vercel AI Gateway, DeepSeek, NVIDIA, Cloudflare, Hugging Face, Kimi, MiniMax, ZAI, OpenCode Zen/Go.
+- Custom providers in `~/.pi/agent/models.json`: any OpenAI/Anthropic/Google-compatible endpoint — Ollama, LM Studio, vLLM, SGLang, proxies, Vercel AI Gateway. Local models via `/llama` (llama.cpp router, GGUF on demand).
+
+### OAuth / sign-in
+
+- `/login` is the OAuth entry point; credentials stored in `auth.json` (`/logout` removes them). No Google/GitHub sign-in for Pi itself; OAuth is per provider.
+- Claude Pro/Max OAuth — note: third-party harness usage draws from Anthropic extra usage, billed per token, not the plan allowance.
+- OAuth via provider extensions too (e.g. Mistral, SenseTime Raccoon).
+- API keys via env vars (`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, …) or stored through `/login`. Precedence: `--api-key` flag, then `auth.json`, then `models.json`, then env vars.
+
+### Free tier and paid tiers
+
+- Software is free, MIT, $0 — no plan, no seat price, no hosted service. Every dollar is model tokens, paid to whichever provider/subscription you configure.
+- No free models from Pi itself — free only via providers (Gemini CLI / Antigravity free tiers with a Google account).
+- Radius (Earendil's own gateway, optional, early alpha): prepaid credits at providers' list prices; no public price list.
+- MIT stays MIT, per Earendil — some future value-add features will be source-available then open source after a delay, some enterprise features proprietary. No paid edition of the harness exists today.
+
+Sources: https://github.com/earendil-works/pi, https://registry.npmjs.org/@earendil-works/pi-coding-agent/latest, https://www.eesel.ai/blog/pi-coding-agent, https://pi.dev/packages
