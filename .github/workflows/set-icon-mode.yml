@@ -1,0 +1,62 @@
+name: set-icon-mode
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Modality icon style
+        type: choice
+        options:
+          - svg
+          - emoji
+        default: svg
+
+concurrency:
+  group: model-trackers
+  cancel-in-progress: false
+
+jobs:
+  set-mode:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Save setting and regenerate every tracker
+        env:
+          MODE: ${{ inputs.mode }}
+        run: |
+          mkdir -p shared
+          printf '{\n  "icon_mode": "%s"\n}\n' "$MODE" > shared/settings.json
+
+          # Re-render from the committed catalogs (no fetching)
+          find . -path '*/model-updates/sync_models.py' -not -path './.git/*' |
+          while read -r script; do
+            if [ -f "$(dirname "$script")/models.json" ]; then
+              python3 "$script"
+            fi
+          done
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add -A
+
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: switch modality icons to ${{ inputs.mode }}"
+            git push
+          else
+            echo "No changes detected."
+          fi
