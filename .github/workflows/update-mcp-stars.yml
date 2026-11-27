@@ -1,0 +1,50 @@
+name: Update MCP Stars
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Branch or tag to run on'
+        required: false
+        default: 'main'
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-mcp-stars-${{ inputs.ref || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  update-stars:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref_name }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Fetch GitHub stars and sort MCP sections
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 mcp/scripts/add-mcp-stars.py mcp
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add mcp/mcp-sections/
+
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: update GitHub star counts in mcp/mcp-sections"
+            git push
+          else
+            echo "No changes detected."
+          fi
