@@ -1,0 +1,21 @@
+name: Notify Slack on Build Finish
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'failure' }}
+    env:
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+    steps:
+      - name: Send Slack notification via Bot Token
+        run: |
+          curl -fsSL -X POST "https://slack.com/api/chat.postMessage" \
+            -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
+            -H "Content-type: application/json; charset=utf-8" \
+            --data "{\"channel\":\"$SLACK_CHANNEL_ID\",\"text\":\"Build *${{ github.event.workflow_run.name }}* (*${{ github.event.workflow_run.conclusion }}*) in *${{ github.event.workflow_run.repository.full_name }}* — <${{ github.event.workflow_run.html_url }}|View Run>\"}"
