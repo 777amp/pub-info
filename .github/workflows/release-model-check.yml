@@ -1,0 +1,145 @@
+name: release-model-check
+
+on:
+  push:
+    tags:
+      - 'model-check-v*'
+
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag (e.g. model-check-v0.1.0)
+        type: string
+        required: true
+        default: 'model-check-v0.1.0'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build Debian 13 (Trixie) ARM64
+    runs-on: ubuntu-24.04-arm
+    container:
+      image: debian:trixie
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Install Debian 13 build dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            ca-certificates \
+            curl \
+            git \
+            unzip \
+            pkg-config \
+            build-essential \
+            libgtk-3-dev \
+            libwebkit2gtk-4.1-dev
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: micro-apps/model-check/go.mod
+          cache-dependency-path: micro-apps/model-check/go.sum
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install Wails v2 CLI
+        run: |
+          go install github.com/wailsapp/wails/v2/cmd/wails@v2.11.0
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+
+      - name: Run Go unit tests
+        working-directory: micro-apps/model-check
+        run: |
+          mkdir -p frontend/dist
+          touch frontend/dist/.keep
+          go test -v -tags webkit2_41 ./...
+
+      - name: Build model-check for Debian 13 ARM64 (Wayland / WebKit2GTK 4.1)
+        working-directory: micro-apps/model-check
+        run: |
+          wails build -clean -tags webkit2_41
+          file build/bin/model-check || true
+          ls -lh build/bin/model-check
+
+      - name: Package release archive
+        working-directory: micro-apps/model-check
+        run: |
+          mkdir -p dist-release
+          tar -C build/bin -czf dist-release/model-check-debian13-arm64.tar.gz model-check
+          (cd dist-release && sha256sum model-check-debian13-arm64.tar.gz > checksums.txt)
+          cat dist-release/checksums.txt
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: model-check-debian13-arm64
+          path: micro-apps/model-check/dist-release/*
+
+  release:
+    name: Publish GitHub Release
+    needs: build
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: model-check-debian13-arm64
+          path: release-assets
+
+      - name: Create or update GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+          REPO: ${{ github.repository }}
+        run: |
+          cat <<EOF > release-notes.md
+          ## Model Check (${TAG})
+
+          Built natively on **Debian 13 (Trixie) ARM64** for **Raspberry Pi OS (64-bit) with Wayland** (GTK3 + WebKit2GTK 4.1).
+
+          ### Install / Update (overwrites previous installation)
+          Run this single line in your Raspberry Pi terminal:
+
+          \`\`\`bash
+          curl -fsSL "https://github.com/${REPO}/releases/download/${TAG}/model-check-debian13-arm64.tar.gz" | tar -xz -C /tmp && install -Dm755 /tmp/model-check ~/.local/bin/model-check && rm -f /tmp/model-check
+          \`\`\`
+
+          ### Prerequisites & Launch
+          - Runtime library (if not already installed): \`sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-0\`
+          - Ensure \`~/.local/bin\` is in your \`PATH\`, then run:
+            \`\`\`bash
+            GDK_BACKEND=wayland model-check
+            \`\`\`
+            *(If WebKit2GTK shows a blank window under labwc/wayfire on Raspberry Pi GPU drivers, run \`GDK_BACKEND=wayland WEBKIT_DISABLE_DMABUF_RENDERER=1 model-check\`.)*
+
+          ### SHA-256 Checksum
+          \`\`\`
+          $(cat release-assets/checksums.txt)
+          \`\`\`
+          EOF
+
+          if gh release view "${TAG}" >/dev/null 2>&1; then
+            gh release upload "${TAG}" release-assets/* --clobber
+            gh release edit "${TAG}" --title "Model Check ${TAG}" --notes-file release-notes.md
+          else
+            gh release create "${TAG}" release-assets/* \
+              --title "Model Check ${TAG}" \
+              --notes-file release-notes.md
+          fi

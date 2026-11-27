@@ -10,13 +10,25 @@ Currently ships with **Vercel AI Gateway** support and is structured around a pr
 - **Rich model metadata**: Input/output per-1M pricing, tiered & cache pricing, context window, max output, modalities, model type filters, capability tags, ZDR/no-training status, and one-click Copy ID.
 - **RAM-light design**: Native OS WebView + virtualized list (only ~30–40 DOM rows mounted at a time) + compact Go structs.
 
+## Quick Install (Raspberry Pi OS — Debian 13 Trixie, ARM64, Wayland)
+
+Install or update (overwrites any previously installed binary):
+
+```bash
+curl -fsSL "https://github.com/777amp/pub-info/releases/latest/download/model-check-debian13-arm64.tar.gz" | tar -xz -C /tmp && install -Dm755 /tmp/model-check ~/.local/bin/model-check && rm -f /tmp/model-check
+```
+
+Then launch on Wayland:
+
+```bash
+GDK_BACKEND=wayland model-check
+```
+
 ## Prerequisites
 - **Go 1.24+**
 - **Bun** (or Node.js) for building the frontend bundle
-- **Wails v2 CLI**: `go install github.com/wailsapp/wails/v2/cmd/wails@latest`
-- **Linux**: `libgtk-3-dev` and `libwebkit2gtk-4.1-dev`
-- **macOS**: Xcode Command Line Tools
-- **Windows**: WebView2 runtime
+- **Wails v2 CLI**: `go install github.com/wailsapp/wails/v2/cmd/wails@v2.11.0`
+- **Debian 13 / Raspberry Pi OS (64-bit)**: `libgtk-3-dev` and `libwebkit2gtk-4.1-dev` (runtime: `libwebkit2gtk-4.1-0`)
 
 ## Development & Build
 
