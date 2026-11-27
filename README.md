@@ -10,6 +10,8 @@ Public notes, trackers, and small automations.
 ## 📁 Other folders
 
 - [`antigravity/`](antigravity) — notes and files for Antigravity
+- [`scripts/bun/`](scripts/bun) — Bun CLI scripts (including the Vercel AI Gateway & OpenRouter model browser)
+- [`micro-apps/model-check/`](micro-apps/model-check) — model-check micro-app (WIP)
 
 <!-- OPENROUTER:START -->
 | Listed | 🕒 Pending review | Hidden |

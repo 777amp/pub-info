@@ -1,0 +1,12 @@
+{
+  "name": "pub-info-bun-scripts",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "models": "bun run models.ts",
+    "models:vercel": "bun run models.ts --provider vercel",
+    "models:openrouter": "bun run models.ts --provider openrouter",
+    "models:hidden": "bun run models.ts hidden",
+    "models:interactive": "bun run models.ts interactive"
+  }
+}
