@@ -728,7 +728,7 @@
       "context_window": 262144,
       "max_tokens": 65536,
       "type": "language",
-      "zdr": "all",
+      "zdr": "some",
       "no_training": "all",
       "tags": [
         "reasoning",
@@ -1832,7 +1832,7 @@
       "context_window": 0,
       "max_tokens": 0,
       "type": "video",
-      "zdr": "all",
+      "zdr": "none",
       "no_training": "all",
       "supported_specifications": [
         "v3",
@@ -2130,7 +2130,7 @@
       "context_window": 0,
       "max_tokens": 0,
       "type": "video",
-      "zdr": "all",
+      "zdr": "none",
       "no_training": "all",
       "supported_specifications": [
         "v3",
@@ -2234,7 +2234,7 @@
       "context_window": 0,
       "max_tokens": 0,
       "type": "video",
-      "zdr": "all",
+      "zdr": "none",
       "no_training": "all",
       "supported_specifications": [
         "v3",
@@ -19195,7 +19195,7 @@
       "context_window": 1048576,
       "max_tokens": 1048576,
       "type": "language",
-      "zdr": "all",
+      "zdr": "some",
       "no_training": "all",
       "tags": [
         "implicit-caching",
@@ -33222,6 +33222,39 @@
       }
     },
     {
+      "id": "recraft/recraft-v4.1-flash-v2",
+      "object": "model",
+      "created": 1755815280,
+      "released": 1795651200,
+      "owned_by": "recraft",
+      "name": "Recraft V4.1 Flash V2",
+      "description": "Recraft V4.1 Flash V2 is the next version of Recraft's Flash line: a fast, low-cost raster image model with quality close to Recraft V4.1, built for high-volume generation and rapid iteration. It generates raster images only and does not support styles.",
+      "context_window": 0,
+      "max_tokens": 0,
+      "type": "image",
+      "zdr": "none",
+      "no_training": "none",
+      "tags": [
+        "image-generation"
+      ],
+      "supported_specifications": [
+        "v2",
+        "v3",
+        "v4"
+      ],
+      "modalities": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "image"
+        ]
+      },
+      "pricing": {
+        "image": "0.007"
+      }
+    },
+    {
       "id": "recraft/recraft-v4.1-pro",
       "object": "model",
       "created": 1755815280,
@@ -38374,7 +38407,7 @@
       "context_window": 1000000,
       "max_tokens": 128000,
       "type": "language",
-      "zdr": "all",
+      "zdr": "some",
       "no_training": "all",
       "tags": [
         "reasoning",

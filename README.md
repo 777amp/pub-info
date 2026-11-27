@@ -18,3 +18,11 @@ Public notes, trackers, and small automations.
 
 Last sync 2026-11-27 UTC · [Browse all models on OpenRouter](https://openrouter.ai/models)
 <!-- OPENROUTER:END -->
+
+<!-- VERCEL:START -->
+| Listed | 🕒 Pending review | Hidden |
+| :-: | :-: | :-: |
+| [**519**](vercel/model-updates/MODELS.md) | **519** | **0** |
+
+Last sync 2026-11-27 UTC · [Browse all models on Vercel AI Gateway](https://vercel.com/ai-gateway/models)
+<!-- VERCEL:END -->
