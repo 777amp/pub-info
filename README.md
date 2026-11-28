@@ -16,9 +16,9 @@ Public notes, trackers, and small automations.
 <!-- OPENROUTER:START -->
 | Listed | 🕒 Pending review | Hidden |
 | :-: | :-: | :-: |
-| [**47**](openrouter/model-updates/MODELS.md) | **23** | **430** |
+| [**47**](openrouter/model-updates/MODELS.md) | **24** | **429** |
 
-Last sync 2026-11-27 UTC · [Browse all models on OpenRouter](https://openrouter.ai/models)
+Last sync 2026-11-28 UTC · [Browse all models on OpenRouter](https://openrouter.ai/models)
 <!-- OPENROUTER:END -->
 
 <!-- VERCEL:START -->
