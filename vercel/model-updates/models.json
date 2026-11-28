@@ -6353,6 +6353,90 @@
       }
     },
     {
+      "id": "assemblyai/stt-3.7",
+      "object": "model",
+      "created": 1755815280,
+      "released": 1795737600,
+      "owned_by": "assemblyai",
+      "name": "STT-3.7",
+      "description": "AssemblyAI's flagship pre-recorded speech-to-text model. Transcribes audio in 32 languages and returns the transcript, its duration, and word-level timestamps.",
+      "type": "transcription",
+      "zdr": "none",
+      "no_training": "none",
+      "supported_specifications": [
+        "v3",
+        "v4"
+      ],
+      "modalities": {
+        "input": [
+          "audio"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "pricing": {
+        "input": "0",
+        "transcription_duration_cost_per_second": "0.00005834"
+      }
+    },
+    {
+      "id": "assemblyai/tts-1",
+      "object": "model",
+      "created": 1755815280,
+      "released": 1795737600,
+      "owned_by": "assemblyai",
+      "name": "TTS-1",
+      "description": "AssemblyAI's text-to-speech model. Generates speech in English, Spanish, German, Italian, Portuguese, and French from a library of more than 4,000 voices.",
+      "type": "speech",
+      "zdr": "none",
+      "no_training": "none",
+      "supported_specifications": [
+        "v3",
+        "v4"
+      ],
+      "modalities": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "audio"
+        ]
+      },
+      "pricing": {
+        "input": "0.000015",
+        "speech_input_character_cost": "0.000015"
+      }
+    },
+    {
+      "id": "assemblyai/universal-2",
+      "object": "model",
+      "created": 1755815280,
+      "released": 1795737600,
+      "owned_by": "assemblyai",
+      "name": "Universal-2",
+      "description": "AssemblyAI's broad-coverage pre-recorded speech-to-text model for 99 languages, including those STT-3.7 does not cover. Returns the transcript, its duration, and word-level timestamps.",
+      "type": "transcription",
+      "zdr": "none",
+      "no_training": "none",
+      "supported_specifications": [
+        "v3",
+        "v4"
+      ],
+      "modalities": {
+        "input": [
+          "audio"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "pricing": {
+        "input": "0",
+        "transcription_duration_cost_per_second": "0.00004167"
+      }
+    },
+    {
       "id": "baseten/bison-1",
       "object": "model",
       "created": 1755815280,
@@ -14526,8 +14610,9 @@
         }
       ],
       "pricing": {
-        "input": "0",
-        "output": "0"
+        "input": "0.000001",
+        "output": "0.0000052",
+        "input_cache_read": "0.0000002"
       }
     },
     {
@@ -34911,6 +34996,50 @@
           "video"
         ]
       },
+      "video_capabilities": {
+        "supported_operations": [
+          "video-editing"
+        ],
+        "supported_resolutions": [
+          "1080p",
+          "4k"
+        ],
+        "generate_audio": false,
+        "max_sample_count": 1,
+        "input_limits": {
+          "video": {
+            "max_count": 1,
+            "supported_formats": [
+              "3gp",
+              "avi",
+              "dv",
+              "flv",
+              "m1v",
+              "m2t",
+              "m2ts",
+              "m2v",
+              "m4v",
+              "mkv",
+              "mov",
+              "mp4",
+              "mpeg",
+              "mpg",
+              "mts",
+              "mxf",
+              "ser",
+              "ts",
+              "vob",
+              "webm",
+              "wmv"
+            ],
+            "supported_sources": [
+              "url",
+              "base64",
+              "buffer"
+            ]
+          }
+        }
+      },
       "pricing": {}
     },
     {
@@ -34937,6 +35066,50 @@
         "output": [
           "video"
         ]
+      },
+      "video_capabilities": {
+        "supported_operations": [
+          "video-editing"
+        ],
+        "supported_resolutions": [
+          "1080p",
+          "4k"
+        ],
+        "generate_audio": false,
+        "max_sample_count": 1,
+        "input_limits": {
+          "video": {
+            "max_count": 1,
+            "supported_formats": [
+              "3gp",
+              "avi",
+              "dv",
+              "flv",
+              "m1v",
+              "m2t",
+              "m2ts",
+              "m2v",
+              "m4v",
+              "mkv",
+              "mov",
+              "mp4",
+              "mpeg",
+              "mpg",
+              "mts",
+              "mxf",
+              "ser",
+              "ts",
+              "vob",
+              "webm",
+              "wmv"
+            ],
+            "supported_sources": [
+              "url",
+              "base64",
+              "buffer"
+            ]
+          }
+        }
       },
       "pricing": {}
     },

@@ -24,7 +24,7 @@ Last sync 2026-11-28 UTC · [Browse all models on OpenRouter](https://openrouter
 <!-- VERCEL:START -->
 | Listed | 🕒 Pending review | Hidden |
 | :-: | :-: | :-: |
-| [**519**](vercel/model-updates/MODELS.md) | **519** | **0** |
+| [**522**](vercel/model-updates/MODELS.md) | **522** | **0** |
 
-Last sync 2026-11-27 UTC · [Browse all models on Vercel AI Gateway](https://vercel.com/ai-gateway/models)
+Last sync 2026-11-28 UTC · [Browse all models on Vercel AI Gateway](https://vercel.com/ai-gateway/models)
 <!-- VERCEL:END -->
